@@ -10,8 +10,28 @@ export default class Customizator {
         let scale;
         const body = document.querySelector('body');
         if (e.target.value) {
-            scale = e.target.value.replace(/x/g, "");
+            scale = +e.target.value.replace(/x/g, "");
         }
+
+        function recursy(element) {
+            element.childNodes.forEach(node => {
+                if (node.nodeName === '#text' && node.nodeValue.replace(/\s+/g, "").length > 0){
+                    
+                    if() {
+                        let value = window.getComputedStyle(node.parentNode, null).fontSize;
+                        node.parentNode.setAttribute()
+                        node.parentNode.style.fontSize = +value.replace(/px/g, "") * scale + "px";
+                    }
+
+                    let value = window.getComputedStyle(node.parentNode, null).fontSize;
+                    node.parentNode.style.fontSize = +value.replace(/px/g, "") * scale + "px";
+                } else {
+                    recursy(node);
+                }
+            })
+        }
+        recursy(body);
+
         console.log(scale);
     }
 
