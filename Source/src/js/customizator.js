@@ -2,9 +2,13 @@ export default class Customizator {
     constructor() {
         this.btnBlock = document.createElement('div');
         this.colorPicker = document.createElement('input');
+        this.clear = document.createElement('div');
+        this.scale = localStorage.getItem('scale') || 1;
+        this.color = localStorage.getItem('color') || '#ffffff';
 
         this.btnBlock.addEventListener('click', (e) => this.onScaleChange(e));
         this.colorPicker.addEventListener('input', (e) => this.onColorChange(e));
+        this.clear.addEventListener('click', () => this.reset());
     }
 
     onScaleChange(e) {
@@ -13,7 +17,7 @@ export default class Customizator {
             this.scale = +e.target.value.replace(/x/g, "");
         }
 
-        function recursy(element) {
+        const recursy = (element) => {
             element.childNodes.forEach(node => {
                 if (node.nodeName === '#text' && node.nodeValue.replace(/\s+/g, "").length > 0){
                     
@@ -23,10 +27,7 @@ export default class Customizator {
                         node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * this.scale + "px";
                     } else {
                         node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * this.scale + "px";
-                    }
-
-                    let value = window.getComputedStyle(node.parentNode, null).fontSize;
-                    node.parentNode.style.fontSize = +value.replace(/px/g, "") * scale + "px";
+                    }  
                 } else {
                     recursy(node);
                 }
@@ -83,18 +84,35 @@ export default class Customizator {
             width: 40px;
             height: 40px;
         }
+
+        .clear {
+            font-size: 20px;
+            cursor: pointer;
+        }
         `;
         document.querySelector('head').appendChild(style);
     }
 
+    reset() {
+        localStorage.clear();
+        this.scale = 1;
+        this.color = '#ffffff';
+        this.setBgColor();
+        this.onScaleChange();
+    }
+
     render() {
         this.injectStyle();
+        this.setBgColor();
+        this.onScaleChange();
 
         let scaleInputS = document.createElement('input');
             scaleInputM = document.createElement('input');
             panel = document.createElement('div');
 
-        panel.append(this.btnBlock, this.colorPicker);
+        panel.append(this.btnBlock, this.colorPicker, this.clear);
+        this.clear.innerHTML = "&times";
+        this.clear.classList.add('clear');
 
         scaleInputS.classList.add('scale_btn');
         scaleInputM.classList.add('scale_btn');
